@@ -7,4 +7,4 @@ We will build a cross compiler with the source language as Java, Target Language
 Lexer
 ==========================
 
-We will be building a lexer first.
+We will be building a lexer using the software LEX.
