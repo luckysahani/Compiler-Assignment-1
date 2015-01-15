@@ -8,3 +8,14 @@ Lexer
 ==========================
 
 We will be building a lexer using the software LEX.
+
+
+
+
+
+
+
+
+
+===============================================
+I TAKE NO GUARENTEE IF ANYONE COPIES THIS CODE ... THIS CODE IS FOR INFORMATION PURPOSE ONLY....
