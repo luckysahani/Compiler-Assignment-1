@@ -8,6 +8,7 @@
 
 #importing libraries
 import ply.lex as lex
+import sys
 
 reserved = {
   'abstract' : 'ABSTRACT' ,
@@ -96,7 +97,7 @@ lexer = lex.lex()
 
 
 # Give the lexer some input
-lexer.input('hardik bansal for int short byte /* archit */')
+lexer.input((open(sys.argv[1],'r')).read())
 
 # Tokenize
 while True:
