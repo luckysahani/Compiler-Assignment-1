@@ -17,7 +17,6 @@ tokens = ( 'IDENTIFIER',
            'COMMENT',
            )
 
-
 def t_IDENTIFIER(t):
     r'[a-zA-Z$_][a-zA-Z$_0-9]*'
     return t
@@ -27,6 +26,12 @@ def t_COMMENT(t):
     return t
     # No return value. Token discarded
 
+def t_OPERATOR(t):
+    r'(\=)|(\>)|(\<)|(\!)|(\~)|(\?)|(\:)|(\=\=)|(\<\=)|(\>\=)|(\!\=)|(\&\&)|(\|\|)|(\+\+)|(\-\-)|(\+)|(\-)|(\*)|(\/)|(\&)|(\|)|(\^)|(\%)|(\<\<)|(\>\>)|(\>\>\>)|(\+\=)|(\-\=)|(\*\=)|(\/\=)|(\&\=)|(\|\=)|(\^\=)|(\%\=)|(\<\<\=)|(\>\>\=)|(\>\>\=)'
+    return t
+
+
+#r'(=)|(>)|(<)|(!)|(~)|(\?)|(:)|(==)|(<=)|(>=)|(!=)|(&&)|(\|\|)|(\+\+)|(--)|(\+)|(-)|(\*)|(/)|(&)|(\|)|(^)|(%)|(<<)|(>>)|(>>>)|(\+=)|(-=)|(\*=)|(/=)|(&=)|(\|=)|(^=)|(%=)|(<<=)|(>>=)|(>>=)'
 # A string containing ignored characters (spaces and tabs)
 t_ignore  = ' \t'
 
@@ -38,10 +43,11 @@ def t_error(t):
 # Build the lexer
 lexer = lex.lex()
 
-
+data1 = 'lucky rocksbansal  /* hardik */'
+data2 = 'lucky rocksbansal  /* hardik */ +  *  + - *'
 
 # Give the lexer some input
-lexer.input('hardik bansal /* hardik */')
+lexer.input(data2)
 
 # Tokenize
 while True:
