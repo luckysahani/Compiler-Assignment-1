@@ -8,14 +8,71 @@
 
 #importing libraries
 import ply.lex as lex
+import sys
 
-tokens = ( 'IDENTIFIER',
+reserved = {
+  'abstract' : 'ABSTRACT' ,
+  'continue' : 'CONTINUE' , 
+  'goto'  : 'GOTO' ,
+  'package' : 'PACKAGE' ,
+  'switch'  : 'SWITCH' ,
+  'assert'  : 'ASSERT' ,
+  'default' : 'DEFAULT' ,
+  'if'  : 'IF' ,
+  'private' : 'PRIVATE' ,
+  'this'  : 'THIS' ,
+  'boolean' : 'BOOLEAN' ,
+  'do'  : 'DO' ,
+  'implements'  : 'IMPLEMENTS' ,
+  'protected' : 'PROTECTED' ,
+  'throw' : 'THROW' ,
+  'break' : 'BREAK' ,
+  'double' : 'DOUBLE' ,
+  'import'  : 'IMPORT' ,
+  'public'  : 'PUBLIC' ,
+  'throws': 'THROWS' ,
+  'byte'  : 'BYTE' ,
+  'else'  : 'ELSE' ,
+  'instanceof'  : 'INSTANCEOF' ,
+  'return'  : 'RETURN' ,
+  'transient' : 'TRANSIENT' ,
+  'case'  : 'CASE' ,
+  'extends' : 'EXTENDS' ,
+  'int' : 'INT' ,
+  'short' : 'SHORT' ,
+  'try' : 'TRY' ,
+  'catch' : 'CATCH' ,
+  'final' : 'FINAL' ,
+  'interface' : 'INTERFACE' ,
+  'static'  : 'STATIC' ,
+  'void'  : 'VOID' ,
+  'char'  : 'CHAR' ,
+  'finally' : 'FINALLY' ,
+  'long'  : 'LONG' ,
+  'strictfp'  :  'STRCITFP' ,
+  'volatile'  : 'VOLATILE' ,
+  'class' : 'CLASS' ,
+  'float' : 'FLOAT' ,
+  'native' : 'NATIVE' ,
+  'super' : 'SUPER' ,
+  'while' : 'WHILE' ,
+  'const' : 'CONST' ,
+  'for' : 'FOR' ,
+  'new' : 'NEW' , 
+  'synchronized' : 'SYNCHRONIZED'
+}
+
+tokens = ['IDENTIFIER',
            'KEYWORD',
            'SEPERATOR',
            'OPERATOR',
            'LITERAL',
-           'COMMENT',
-           )
+           'COMMENT'] + list(reserved.values())
+
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    t.type = reserved.get(t.value,'IDENTIFIER')    # Check for reserved words
+    return t
 
 def t_IDENTIFIER(t):
     r'[a-zA-Z$_][a-zA-Z$_0-9]*'
@@ -47,7 +104,9 @@ data1 = 'lucky rocksbansal  /* hardik */'
 data2 = 'lucky rocksbansal  /* hardik */ +  *  + - *'
 
 # Give the lexer some input
-lexer.input(data2)
+# lexer.input(data2)
+
+lexer.input((open(sys.argv[1],'r')).read())
 
 # Tokenize
 while True:
