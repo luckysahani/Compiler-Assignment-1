@@ -23,7 +23,7 @@ def t_IDENTIFIER(t):
     return t
 
 def t_COMMENT(t):
-    r'\#.*|/\**\*/'
+    r'(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|(\#.*)'
     return t
     # No return value. Token discarded
 
