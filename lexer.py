@@ -101,7 +101,7 @@ def t_OPERATOR(t):
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
-#r'(=)|(>)|(<)|(!)|(~)|(\?)|(:)|(==)|(<=)|(>=)|(!=)|(&&)|(\|\|)|(\+\+)|(--)|(\+)|(-)|(\*)|(/)|(&)|(\|)|(^)|(%)|(<<)|(>>)|(>>>)|(\+=)|(-=)|(\*=)|(/=)|(&=)|(\|=)|(^=)|(%=)|(<<=)|(>>=)|(>>=)'
+
 # A string containing ignored characters (spaces and tabs)
 t_ignore  = ' \t'
 
@@ -113,18 +113,11 @@ def t_error(t):
 # Build the lexer
 lexer = lex.lex()
 
-data1 = 'lucky rocksbansal  /* hardik */'
-data2 = 'lucky rocksbansal  /* hardik */ +  *  + - *'
-
-# Give the lexer some input
-# lexer.input(data2)
-
 lexer.input((open(sys.argv[1],'r')).read())
 
-# Tokenize
 while True:
     tok = lexer.token()
-    if not tok: break      # No more input
+    if not tok: break      
     print tok
 
 
