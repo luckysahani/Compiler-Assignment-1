@@ -61,19 +61,34 @@ reserved = {
   'new' : 'NEW' , 
   'synchronized' : 'SYNCHRONIZED'
 }
+seperator = {
+  ';' : 'SEMICOLON',
+  ',' : 'COMMA' ,
+  '.' : 'DOT' ,
+  '(' : 'LROUNPAREN' ,
+  ')' : 'RROUNPAREN' ,
+  '{' : 'LCURPAREN' ,
+  '}' : 'RCURPAREN' ,
+  '[' : 'LSQPAREN' ,
+  ']' : 'RSQPAREN' 
+}
 
 tokens = ['IDENTIFIER',
            'KEYWORD',
            'SEPERATOR',
            'OPERATOR',
            'LITERAL',
-           'COMMENT'] + list(reserved.values())
+           'COMMENT'] + list(reserved.values()) + list(seperator.values())
 
 def t_IDENTIFIER(t):
     r'[a-zA-Z$_][a-zA-Z$_0-9]*'
     t.type = reserved.get(t.value,'IDENTIFIER')    # Check for reserved words
     return t
 
+def t_SEPERATOR(t):
+    r'[;,\.\(\)\{\}\[\]]'
+    t.type = seperator.get(t.value,'SEPERATOR')   # Check for seperators
+    return t
 def t_COMMENT(t):
     r'(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|(\#.*)'
     return t
