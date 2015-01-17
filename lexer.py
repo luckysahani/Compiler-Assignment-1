@@ -1,40 +1,31 @@
-# ------------------------------------------------------------
-# calclex.py
-#
-# tokenizer for a simple expression evaluator for
-# numbers and +,-,*,/
-# ------------------------------------------------------------
+#####################################
+# lexer.py
+# This file tokenize a java file
+# namely  identifier | keyword | separator | operator | literal | comment
+#####################################
+
+## List of all tokens
+
+#importing libraries
 import ply.lex as lex
 
-# List of token names.   This is always required
-tokens = (
-   'NUMBER',
-   'PLUS',
-   'MINUS',
-   'TIMES',
-   'DIVIDE',
-   'LPAREN',
-   'RPAREN',
-)
+tokens = ( 'IDENTIFIER',
+           'KEYWORD',
+           'SEPERATOR',
+           'OPERATOR',
+           'LITERAL',
+           'COMMENT',
+           )
 
-# Regular expression rules for simple tokens
-t_PLUS    = r'\+'
-t_MINUS   = r'-'
-t_TIMES   = r'\*'
-t_DIVIDE  = r'/'
-t_LPAREN  = r'\('
-t_RPAREN  = r'\)'
 
-# A regular expression rule with some action code
-def t_NUMBER(t):
-    r'\d+'
-    t.value = int(t.value)    
+def t_IDENTIFIER(t):
+    r'[a-zA-Z$_][a-zA-Z$_0-9]*'
     return t
 
-# Define a rule so we can track line numbers
-def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
+def t_COMMENT(t):
+    r'\#.*|/\**\*/'
+    return t
+    # No return value. Token discarded
 
 # A string containing ignored characters (spaces and tabs)
 t_ignore  = ' \t'
@@ -48,14 +39,9 @@ def t_error(t):
 lexer = lex.lex()
 
 
-# Test it out
-data = '''
-3 + 4 * 10
-  + -20 *2
-'''
 
 # Give the lexer some input
-lexer.input(data)
+lexer.input('hardik bansal /* hardik */')
 
 # Tokenize
 while True:
@@ -63,7 +49,4 @@ while True:
     if not tok: break      # No more input
     print tok
 
-# lexer.input(data)
 
-# for tok in lexer:
-#     print tok
