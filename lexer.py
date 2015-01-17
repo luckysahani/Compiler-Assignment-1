@@ -69,13 +69,9 @@ tokens = ['IDENTIFIER',
            'LITERAL',
            'COMMENT'] + list(reserved.values())
 
-def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = reserved.get(t.value,'IDENTIFIER')    # Check for reserved words
-    return t
-
 def t_IDENTIFIER(t):
     r'[a-zA-Z$_][a-zA-Z$_0-9]*'
+    t.type = reserved.get(t.value,'IDENTIFIER')    # Check for reserved words
     return t
 
 def t_COMMENT(t):
