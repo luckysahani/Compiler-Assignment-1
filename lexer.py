@@ -23,9 +23,8 @@ integer_regex = hexadecimal + r'|' + octal_regex + r'|' + decimal_regex
 exp_regex = r'[eE][+-]?[0-9]+'
 float_regex = r'[0-9]+' + exp_regex + '|' + r'[0-9]+\.[0-9]*' + exp_regex + '|' + '.[0-9]+' + exp_regex
 boolean_regex = r'(true)|(false)|(TRUE)|(FALSE)'
-char_regex = r'\'[. \n|\t|\v|\r|\f|\a|\\|\'|\"]\''
+char_regex = r'\'.\'' + '|' + r'\'\\[ntvrfa\\\'\"]\''
 literal_regex = float_regex + r'|' + integer_regex + r'|' + boolean_regex + r'|' + char_regex
-
 
 
 reserved = {

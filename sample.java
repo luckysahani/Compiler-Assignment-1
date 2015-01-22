@@ -3,3 +3,4 @@ int ( hardik ) // single line comment
 multiline comment */
 for a while make a class
 # This is a single line.
+' ' '\n'
