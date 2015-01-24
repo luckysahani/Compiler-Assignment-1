@@ -13,20 +13,6 @@ import sys
 
 #definations of different regex
 
-ml_comment_regex = r'(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)'
-sl_comment_regex = r'(//.*)'
-comment_regex = ml_comment_regex + r'|' + sl_comment_regex
-decimal_regex = r'(0)|[1-9][0-9]*'
-octal_regex = r'0[1-9][0-9]*'
-hexadecimal = r'0[xX][1-9][0-9]*'
-integer_regex = hexadecimal + r'|' + octal_regex + r'|' + decimal_regex
-exp_regex = r'[eE][+-]?[0-9]+'
-float_regex = r'[0-9]+' + exp_regex + '|' + r'[0-9]+\.[0-9]*' + exp_regex + '|' + '.[0-9]+' + exp_regex
-boolean_regex = r'(true)|(false)|(TRUE)|(FALSE)'
-char_regex = r'\'.\'' + '|' + r'\'\\[ntvrfa\\\'\"]\''
-literal_regex = float_regex + r'|' + integer_regex + r'|' + boolean_regex + r'|' + char_regex
-
-
 reserved = {
   'abstract' : 'ABSTRACT' ,
   'continue' : 'CONTINUE' , 
@@ -90,16 +76,41 @@ seperator = {
   ']' : 'RSQPAREN' 
 }
 
-tokens = ['IDENTIFIER',
+tokens = [ 'WHITESPACE',
+           'IDENTIFIER',
+           'INTEGER',
            'KEYWORD',
            'SEPERATOR',
            'OPERATOR',
            'LITERAL',
            'COMMENT'] + list(reserved.values()) + list(seperator.values())
 
+ml_comment_regex = r'(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)'
+sl_comment_regex = r'(//.*)'
+comment_regex = ml_comment_regex + r'|' + sl_comment_regex
+decimal_regex = r'((0)|([1-9][0-9]*)[l|L]?)' + r'|'+ r'([1-9]_+[0-9][0-9_]*[0-9])'
+octal_regex = r'0_?([0-7])|([0-7][0-7_]*[0-7])'
+hexadecimal_regex = r'(0[xX][0-9abcdefABCDEF][0-9abcdefABCDEF_]*[0-9abcdefABCDEF])'+r'|'+'(0[xX][0-9abcdefABCDEF])'
+binary_regex = r''
+integer_regex = hexadecimal_regex + r'|' + octal_regex + r'|' + decimal_regex
+exp_regex = r'[eE][+-]?[0-9]+'
+float_regex = r'[0-9]+' + exp_regex + r'|' + r'[0-9]+\.[0-9]*' + exp_regex + r'|' + '.[0-9]+' + exp_regex
+boolean_regex = r'(true)|(false)|(TRUE)|(FALSE)'
+char_regex = r'\'.\'' + '|' + r'\'\\[ntvrfa\\\'\"]\''
+literal_regex = float_regex + r'|' + boolean_regex + r'|' + char_regex
+
 
 @TOKEN(literal_regex)
 def t_LITERAL(t):
+    return t
+
+
+@TOKEN(decimal_regex)
+def t_INTEGER(t):
+    return t
+
+def t_WHITESPACE(t):
+    r'[ \t\f]'
     return t
 
 def t_IDENTIFIER(t):
@@ -126,7 +137,7 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 # A string containing ignored characters (spaces and tabs)
-t_ignore  = ' \t'
+#t_ignore  = ' \t'
 
 # Error handling rule
 def t_error(t):
@@ -146,3 +157,8 @@ while True:
     tok = lexer.token()
     if not tok: break      
     print tok
+'''
+WHITESPACE,
+COMMENT,
+
+''' 
