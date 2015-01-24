@@ -78,6 +78,7 @@ seperator = {
 
 tokens = [ 'WHITESPACE',
            'IDENTIFIER',
+           'FLOAT',
            'INTEGER',
            'KEYWORD',
            'SEPERATOR',
@@ -85,27 +86,46 @@ tokens = [ 'WHITESPACE',
            'LITERAL',
            'COMMENT'] + list(reserved.values()) + list(seperator.values())
 
+
+## COMMENT REGEX
 ml_comment_regex = r'(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)'
 sl_comment_regex = r'(//.*)'
 comment_regex = ml_comment_regex + r'|' + sl_comment_regex
-decimal_regex = r'((0)|([1-9][0-9]*)[l|L]?)' + r'|'+ r'([1-9]_+[0-9][0-9_]*[0-9])'
-octal_regex = r'0_?([0-7])|([0-7][0-7_]*[0-7])'
-hexadecimal_regex = r'(0[xX][0-9abcdefABCDEF][0-9abcdefABCDEF_]*[0-9abcdefABCDEF])'+r'|'+'(0[xX][0-9abcdefABCDEF])'
-binary_regex = r''
-integer_regex = hexadecimal_regex + r'|' + octal_regex + r'|' + decimal_regex
-exp_regex = r'[eE][+-]?[0-9]+'
-float_regex = r'[0-9]+' + exp_regex + r'|' + r'[0-9]+\.[0-9]*' + exp_regex + r'|' + '.[0-9]+' + exp_regex
+
+## INTEGER REGEX
+decimal_regex = r'([1-9]_+[0-9][0-9_]*[0-9][lL]?)' + r'|'+ r'((0)|([1-9][0-9]*)[lL]?)' 
+octal_regex = r'0_?[0-7][0-7_]*[0-7][lL]?' +r'|'+  r'0_?([0-7])[lL]?'
+hexadecimal_regex = r'(0[xX][0-9abcdefABCDEF][0-9abcdefABCDEF_]*[0-9abcdefABCDEF][lL]?)'+r'|'+'(0[xX][0-9abcdefABCDEF])[l|L]'
+binary_regex = r'(0[bB][01][01_]*[01][lL]?)' + r'|' + r'(0[bB][01][lL]?)' 
+integer_regex = hexadecimal_regex + r'|' + octal_regex + r'|' + binary_regex + r'|' + decimal_regex
+
+## FLOAT REGEX
+digits = r'(([0-9][0-9_]*[0-9])|([0-9]))'
+exp_regex = r'([eE][\+\-])' + digits
+decimalfloat_regex_1 = digits + r'\.' + digits + r'?(' + exp_regex + r')?[fFdD]?' 
+decimalfloat_regex_2 = r'\.' + digits + r'(' + exp_regex + r')?[fFdD]?' 
+decimalfloat_regex_3 = digits + r'(' + exp_regex + r')[fFdD]?' 
+decimalfloat_regex_4 = digits + r'(' + exp_regex + r')?[fFdD]' 
+decimalfloat_regex = decimalfloat_regex_1 + r'|' + decimalfloat_regex_2 + r'|' + decimalfloat_regex_3 + r'|' + decimalfloat_regex_4
+
+
+
+
+## OTHER LITERALS REGEX
 boolean_regex = r'(true)|(false)|(TRUE)|(FALSE)'
 char_regex = r'\'.\'' + '|' + r'\'\\[ntvrfa\\\'\"]\''
-literal_regex = float_regex + r'|' + boolean_regex + r'|' + char_regex
+literal_regex = boolean_regex + r'|' + char_regex
 
 
-@TOKEN(literal_regex)
-def t_LITERAL(t):
+#@TOKEN(literal_regex)
+#def t_LITERAL(t):
+#    return t
+
+@TOKEN(decimalfloat_regex)
+def t_FLOAT(t):
     return t
 
-
-@TOKEN(decimal_regex)
+@TOKEN(integer_regex)
 def t_INTEGER(t):
     return t
 
@@ -123,10 +143,10 @@ def t_COMMENT(t):
     return t
     # No return value. Token discarded
 
-def t_SEPERATOR(t):
-    r'[;,\.\(\)\{\}\[\]]'
-    t.type = seperator.get(t.value,'SEPERATOR')   # Check for seperators
-    return t
+#def t_SEPERATOR(t):
+#    r'[;,\.\(\)\{\}\[\]]'
+#    t.type = seperator.get(t.value,'SEPERATOR')   # Check for seperators
+#    return t
 
 def t_OPERATOR(t):
     r'(\=)|(\>)|(\<)|(\!)|(\~)|(\?)|(\:)|(\=\=)|(\<\=)|(\>\=)|(\!\=)|(\&\&)|(\|\|)|(\+\+)|(\-\-)|(\+)|(\-)|(\*)|(\/)|(\&)|(\|)|(\^)|(\%)|(\<\<)|(\>\>)|(\>\>\>)|(\+\=)|(\-\=)|(\*\=)|(\/\=)|(\&\=)|(\|\=)|(\^\=)|(\%\=)|(\<\<\=)|(\>\>\=)|(\>\>\=)'
@@ -160,5 +180,8 @@ while True:
 '''
 WHITESPACE,
 COMMENT,
+IDENTIFIERS,
+KEYWORDS,
+INTEGER,
 
 ''' 
