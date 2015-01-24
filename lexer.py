@@ -103,12 +103,19 @@ char_regex = r'\'.\'' + '|' + r'\'\\[ntvrfa\\\'\"]\''
 literal_regex = float_regex + r'|' + boolean_regex + r'|' + char_regex
 
 #Try 
-
-
-
-
-
-#
+# BinaryExponentIndicator=r'p|P'
+# Sign=r'(\+)|(\-)'
+# SignedInteger
+# BinaryExponent= BinaryExponentIndicator + SignedInteger
+# HexSignificand=
+# HexadecimalFloatingPointLiteral
+# FloatTypeSuffix
+# ExponentIndicator
+# ExponentPart
+# DecimalFloatingPointLiteral
+# FloatingPointLiteral
+#(([1-9][0-9]*\.?[0-9]*)|(\.[0-9]+))([Ee][+-]?[0-9]+)?
+#^[-+]?[0-9]*\.?[0-9]+$ or ^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$
 
 
 
