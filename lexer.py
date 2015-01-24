@@ -63,7 +63,10 @@ reserved = {
   'for' : 'FOR' ,
   'new' : 'NEW' , 
   'synchronized' : 'SYNCHRONIZED'
+  'enum' : 'ENUM'
 }
+
+
 seperator = {
   ';' : 'SEMICOLON',
   ',' : 'COMMA' ,
@@ -98,6 +101,15 @@ float_regex = r'[0-9]+' + exp_regex + r'|' + r'[0-9]+\.[0-9]*' + exp_regex + r'|
 boolean_regex = r'(true)|(false)|(TRUE)|(FALSE)'
 char_regex = r'\'.\'' + '|' + r'\'\\[ntvrfa\\\'\"]\''
 literal_regex = float_regex + r'|' + boolean_regex + r'|' + char_regex
+
+#Try 
+
+
+
+
+
+#
+
 
 
 @TOKEN(literal_regex)
