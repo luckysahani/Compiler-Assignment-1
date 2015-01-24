@@ -63,7 +63,10 @@ reserved = {
   'for' : 'FOR' ,
   'new' : 'NEW' , 
   'synchronized' : 'SYNCHRONIZED'
+  'enum' : 'ENUM'
 }
+
+
 seperator = {
   ';' : 'SEMICOLON',
   ',' : 'COMMA' ,
@@ -115,6 +118,22 @@ decimalfloat_regex = decimalfloat_regex_1 + r'|' + decimalfloat_regex_2 + r'|' +
 boolean_regex = r'(true)|(false)|(TRUE)|(FALSE)'
 char_regex = r'\'.\'' + '|' + r'\'\\[ntvrfa\\\'\"]\''
 literal_regex = boolean_regex + r'|' + char_regex
+
+#Try 
+# BinaryExponentIndicator=r'p|P'
+# Sign=r'(\+)|(\-)'
+# SignedInteger
+# BinaryExponent= BinaryExponentIndicator + SignedInteger
+# HexSignificand=
+# HexadecimalFloatingPointLiteral
+# FloatTypeSuffix
+# ExponentIndicator
+# ExponentPart
+# DecimalFloatingPointLiteral
+# FloatingPointLiteral
+#(([1-9][0-9]*\.?[0-9]*)|(\.[0-9]+))([Ee][+-]?[0-9]+)?
+#^[-+]?[0-9]*\.?[0-9]+$ or ^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$
+
 
 
 #@TOKEN(literal_regex)
