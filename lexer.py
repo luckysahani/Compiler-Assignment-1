@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #####################################
 # lexer.py
 # This file tokenize a java file
@@ -12,6 +13,11 @@ from ply.lex import TOKEN
 import sys
 
 #definations of different regex
+
+
+code_str = ""
+token_str = ""
+
 
 reserved = {
   'abstract' : 'ABSTRACT' ,
@@ -81,10 +87,10 @@ seperator = {
 
 tokens = [ 'WHITESPACE',
            'IDENTIFIER',
-           'BOOLEAN',
-           'FLOAT',
-           'INTEGER',
-           'CHAR',
+           'BOOLEAN_CONST',
+           'FLOAT_CONST',
+           'INT_CONST',
+           'CHAR_CONST',
            'STRING',
            'NULL',
            'KEYWORD',
@@ -136,15 +142,15 @@ literal_regex = boolean_regex + r'|' + char_regex
 #    return t
 
 @TOKEN(decimalfloat_regex)
-def t_FLOAT(t):
+def t_FLOAT_CONST(t):
     return t
 
 @TOKEN(integer_regex)
-def t_INTEGER(t):
+def t_INT_CONST(t):
     return t
 
 @TOKEN(char_regex)
-def t_CHAR(t):
+def t_CHAR_CONST(t):
     return t
 
 @TOKEN(string_regex)
@@ -152,7 +158,7 @@ def t_STRING(t):
     return t
 
 @TOKEN(boolean_regex)
-def t_BOOLEAN(t):
+def t_BOOLEAN_CONST(t):
     return t
 
 @TOKEN(null_regex)
@@ -179,12 +185,17 @@ def t_SEPERATOR(t):
     return t
 
 def t_OPERATOR(t):
-    r'(\=)|(\>)|(\<)|(\!)|(\~)|(\?)|(\:)|(\=\=)|(\<\=)|(\>\=)|(\!\=)|(\&\&)|(\|\|)|(\+\+)|(\-\-)|(\+)|(\-)|(\*)|(\/)|(\&)|(\|)|(\^)|(\%)|(\<\<)|(\>\>)|(\>\>\>)|(\+\=)|(\-\=)|(\*\=)|(\/\=)|(\&\=)|(\|\=)|(\^\=)|(\%\=)|(\<\<\=)|(\>\>\=)|(\>\>\=)'
+    r'(>>>=|>>=|<<=|>>|<<|>>>|>=|<=|>|<|==|=|\&\&|\&=|\&|{\+\-\|\&}{2}|[\+\-\*/\&\|\^\%\!]=|[\+\-\*/\&\|\^\%\!\~\?\:])'
     return t
 
 def t_newline(t):
     r'[\n\r]'
     t.lexer.lineno += len(t.value)
+    global code_str
+    global token_str
+    print code_str + "\t\t//" + token_str
+    code_str = ""
+    token_str = ""
 
 # A string containing ignored characters (spaces and tabs)
 #t_ignore  = ' \t'
@@ -202,26 +213,16 @@ lexer = lex.lex()
 
 # Tokenize
 lexer.input((open('sample.java','r')).read())
+lexer.input((open(sys.argv[1],'r')).read())
 
 while True:
     tok = lexer.token()
     if not tok: break      
-    print tok
+   # print tok
+    code_str += tok.value
+    if(tok.type != "WHITESPACE"):
+        token_str += tok.type + " "
 
 print lexer.lineno
 
 
-##Done
-#Newline
-#WHITESPACE
-#Comments
-#Identifier
-#Keywords
-#Integer
-#FLOAT except hex
-#BOOLEAN
-#CHAR
-#STRING
-#NULL
-#SEPERATORS
-#OPERATORS
