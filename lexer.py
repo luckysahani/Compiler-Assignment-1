@@ -62,7 +62,7 @@ reserved = {
   'const' : 'CONST' ,
   'for' : 'FOR' ,
   'new' : 'NEW' , 
-  'synchronized' : 'SYNCHRONIZED'
+  'synchronized' : 'SYNCHRONIZED',
   'enum' : 'ENUM'
 }
 
@@ -81,8 +81,12 @@ seperator = {
 
 tokens = [ 'WHITESPACE',
            'IDENTIFIER',
+           'BOOLEAN',
            'FLOAT',
            'INTEGER',
+           'CHAR',
+           'STRING',
+           'NULL',
            'KEYWORD',
            'SEPERATOR',
            'OPERATOR',
@@ -98,42 +102,33 @@ comment_regex = ml_comment_regex + r'|' + sl_comment_regex
 ## INTEGER REGEX
 decimal_regex = r'([1-9]_+[0-9][0-9_]*[0-9][lL]?)' + r'|'+ r'((0)|([1-9][0-9]*)[lL]?)' 
 octal_regex = r'0_?[0-7][0-7_]*[0-7][lL]?' +r'|'+  r'0_?([0-7])[lL]?'
-hexadecimal_regex = r'(0[xX][0-9abcdefABCDEF][0-9abcdefABCDEF_]*[0-9abcdefABCDEF][lL]?)'+r'|'+'(0[xX][0-9abcdefABCDEF])[l|L]'
+hexadecimal_regex = r'(0[xX][0-9a-fA-F][0-9a-fA-F_]*[0-9a-fA-F][lL]?)'+r'|'+'(0[xX][0-9a-fA-F])[lL]?'
 binary_regex = r'(0[bB][01][01_]*[01][lL]?)' + r'|' + r'(0[bB][01][lL]?)' 
 integer_regex = hexadecimal_regex + r'|' + octal_regex + r'|' + binary_regex + r'|' + decimal_regex
 
 ## FLOAT REGEX
 digits = r'(([0-9][0-9_]*[0-9])|([0-9]))'
-exp_regex = r'([eE][\+\-])' + digits
+exp_regex = r'([eE][\+\-]?)' + digits
 decimalfloat_regex_1 = digits + r'\.' + digits + r'?(' + exp_regex + r')?[fFdD]?' 
 decimalfloat_regex_2 = r'\.' + digits + r'(' + exp_regex + r')?[fFdD]?' 
 decimalfloat_regex_3 = digits + r'(' + exp_regex + r')[fFdD]?' 
 decimalfloat_regex_4 = digits + r'(' + exp_regex + r')?[fFdD]' 
 decimalfloat_regex = decimalfloat_regex_1 + r'|' + decimalfloat_regex_2 + r'|' + decimalfloat_regex_3 + r'|' + decimalfloat_regex_4
 
+## CHAR LITERAL REGEX
+octal_esc = r"[0-3]?[0-7][0-7]?"
+unary_esc = r"u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]"
+char_regex = r"\'([^\']|(\\(n|f|r|b|t|\'|\\|"+ octal_esc +"|" + unary_esc + ")))\'"
 
 
+## STRING LITERAL REGEX
+string_regex = r'\"([^\"\\]|(\\(n|f|r|b|t|\'|\\|' + octal_esc + '|' + unary_esc + ')))*\"'
 
 ## OTHER LITERALS REGEX
 boolean_regex = r'(true)|(false)|(TRUE)|(FALSE)'
-char_regex = r'\'.\'' + '|' + r'\'\\[ntvrfa\\\'\"]\''
+null_regex = r'null'
+
 literal_regex = boolean_regex + r'|' + char_regex
-
-#Try 
-# BinaryExponentIndicator=r'p|P'
-# Sign=r'(\+)|(\-)'
-# SignedInteger
-# BinaryExponent= BinaryExponentIndicator + SignedInteger
-# HexSignificand=
-# HexadecimalFloatingPointLiteral
-# FloatTypeSuffix
-# ExponentIndicator
-# ExponentPart
-# DecimalFloatingPointLiteral
-# FloatingPointLiteral
-#(([1-9][0-9]*\.?[0-9]*)|(\.[0-9]+))([Ee][+-]?[0-9]+)?
-#^[-+]?[0-9]*\.?[0-9]+$ or ^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$
-
 
 
 #@TOKEN(literal_regex)
@@ -146,6 +141,22 @@ def t_FLOAT(t):
 
 @TOKEN(integer_regex)
 def t_INTEGER(t):
+    return t
+
+@TOKEN(char_regex)
+def t_CHAR(t):
+    return t
+
+@TOKEN(string_regex)
+def t_STRING(t):
+    return t
+
+@TOKEN(boolean_regex)
+def t_BOOLEAN(t):
+    return t
+
+@TOKEN(null_regex)
+def t_NULL(t):
     return t
 
 def t_WHITESPACE(t):
@@ -162,17 +173,17 @@ def t_COMMENT(t):
     return t
     # No return value. Token discarded
 
-#def t_SEPERATOR(t):
-#    r'[;,\.\(\)\{\}\[\]]'
-#    t.type = seperator.get(t.value,'SEPERATOR')   # Check for seperators
-#    return t
+def t_SEPERATOR(t):
+    r'[;,\.\(\)\{\}\[\]]'
+    t.type = seperator.get(t.value,'SEPERATOR')   # Check for seperators
+    return t
 
 def t_OPERATOR(t):
     r'(\=)|(\>)|(\<)|(\!)|(\~)|(\?)|(\:)|(\=\=)|(\<\=)|(\>\=)|(\!\=)|(\&\&)|(\|\|)|(\+\+)|(\-\-)|(\+)|(\-)|(\*)|(\/)|(\&)|(\|)|(\^)|(\%)|(\<\<)|(\>\>)|(\>\>\>)|(\+\=)|(\-\=)|(\*\=)|(\/\=)|(\&\=)|(\|\=)|(\^\=)|(\%\=)|(\<\<\=)|(\>\>\=)|(\>\>\=)'
     return t
 
 def t_newline(t):
-    r'\n+'
+    r'[\n\r]'
     t.lexer.lineno += len(t.value)
 
 # A string containing ignored characters (spaces and tabs)
@@ -196,11 +207,21 @@ while True:
     tok = lexer.token()
     if not tok: break      
     print tok
-'''
-WHITESPACE,
-COMMENT,
-IDENTIFIERS,
-KEYWORDS,
-INTEGER,
 
-''' 
+print lexer.lineno
+
+
+##Done
+#Newline
+#WHITESPACE
+#Comments
+#Identifier
+#Keywords
+#Integer
+#FLOAT except hex
+#BOOLEAN
+#CHAR
+#STRING
+#NULL
+#SEPERATORS
+#OPERATORS
